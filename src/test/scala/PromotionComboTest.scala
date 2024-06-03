@@ -142,5 +142,54 @@ class PromotionComboTest extends AnyFunSuite with Matchers {
 
     assert(actualBestGroupPrices == expectedBestGroupPrices)
   }
+
+  test("getBestGroupPrices - complex scenario") {
+    val rateTest = Seq(
+      Rate("M1", "Military"),
+      Rate("M2", "Military"),
+      Rate("M3", "Military"),
+      Rate("S1", "Senior"),
+      Rate("S2", "Senior"),
+      Rate("S3", "Senior"),
+      Rate("F1", "Family"),
+      Rate("F2", "Family"),
+      Rate("F3", "Family"),
+      Rate("G1", "Group"),
+      Rate("G2", "Group"),
+      Rate("G3", "Group"))
+
+    val pricesTest = Seq(
+      CabinPrice("CA", "M1", 200.00),
+      CabinPrice("CA", "M2", 250.00),
+      CabinPrice("CA", "S1", 225.00),
+      CabinPrice("CA", "S2", 260.00),
+      CabinPrice("CB", "M1", 230.00),
+      CabinPrice("CB", "M2", 260.00),
+      CabinPrice("CB", "M2", 225.00),
+      CabinPrice("CB", "S1", 245.00),
+      CabinPrice("CB", "S2", 270.00),
+      CabinPrice("CB", "S3", 220.00),
+      CabinPrice("CA", "F1", 210.00),
+      CabinPrice("CB", "F2", 215.00),
+      CabinPrice("CC", "F3", 209.00),
+      CabinPrice("CB", "G1", 285.00),
+      CabinPrice("CB", "G2", 290.00),
+      CabinPrice("CA", "G3", 270.00))
+
+    val expectedBestGroupPrices = Seq(
+      BestGroupPrice("CA", "M1", 200.00, "Military"),
+      BestGroupPrice("CB", "S3", 220.00, "Senior"),
+      BestGroupPrice("CA", "G3", 270.00, "Group"),
+      BestGroupPrice("CA", "F1", 210.00, "Family"),
+      BestGroupPrice("CB", "M2", 225.00, "Military"),
+      BestGroupPrice("CB", "F2", 215.00, "Family"),
+      BestGroupPrice("CA", "S1", 225.00, "Senior"),
+      BestGroupPrice("CB", "G1", 285.00, "Group"),
+      BestGroupPrice("CC", "F3", 209.00, "Family"))
+
+    val actualBestGroupPrices = BestGroupPriceCalculator.getBestGroupPrices(rateTest, pricesTest)
+
+    assert(actualBestGroupPrices == expectedBestGroupPrices)
+  }
 }
 
